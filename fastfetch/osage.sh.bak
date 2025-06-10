@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+created=$(sudo tune2fs -l /dev/nvme0n1p6 | grep 'Filesystem created' | awk -F 'created: ' '{print $2}')
+created_sec=$(date -d "$created" +%s)
+now_sec=$(date +%s)
+diff_sec=$((now_sec - created_sec))
+
+years=$((diff_sec / 31536000))
+remain=$((diff_sec % 31536000))
+months=$((remain / 2592000))
+remain=$((remain % 2592000))
+days=$((remain / 86400))
+remain=$((remain % 86400))
+hours=$((remain / 3600))
+remain=$((remain % 3600))
+minutes=$((remain / 60))
+
+output=""
+[[ $years -gt 0 ]] && output="$output${years}y "
+[[ $months -gt 0 ]] && output="$output${months}m "
+[[ $days -gt 0 ]] && output="$output${days}d "
+[[ $hours -gt 0 ]] && output="$output${hours}h "
+[[ $minutes -gt 0 ]] && output="$output${minutes}m"
+
+echo $output
+
